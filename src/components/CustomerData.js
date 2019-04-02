@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import CustomersActions from './CustomersActions'
 
-function CustomerData({name, dni, age}) {
+function CustomerData({ name, dni, age, onBack }) {
   return (
     <div>
       <div className="customer-data">
@@ -22,6 +23,9 @@ function CustomerData({name, dni, age}) {
           </strong>
         </div>
       </div>
+      <CustomersActions>
+        <button onClick={onBack}>Volver</button>
+      </CustomersActions>
     </div>
   )
 }
@@ -29,7 +33,8 @@ function CustomerData({name, dni, age}) {
 CustomerData.propTypes = {
   name: PropTypes.string.isRequired,
   dni: PropTypes.string.isRequired,
-  age: PropTypes.number
+  age: PropTypes.number,
+  onBack: PropTypes.func.isRequired
 }
 
 export default CustomerData
