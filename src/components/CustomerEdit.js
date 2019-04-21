@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { reduxForm, Field } from 'redux-form'
 import { setPropsAsInitial } from '../helpers/setPropsAsInitial'
@@ -23,14 +23,6 @@ const validate = values => {
   return error
 }
 
-const MyField = ({ input, meta, type, label, name }) => (
-  <div>
-    <label htmlFor={name}>{label}</label>
-    <input {...input} type={!type ? 'text' : type} />
-    {meta.touched && meta.error && <span>{meta.error}</span>}
-  </div>
-)
-
 const toNumber = value => value && Number(value)
 
 const toUpper = value => value && value.toUpperCase()
@@ -41,52 +33,76 @@ const onlyGrow = (value, previousValue, values) =>
   value &&
   (previousValue ? value : value > previousValue ? value : previousValue)
 
-function CustomerEdit({
-  name,
-  dni,
-  age,
-  handleSubmit,
-  submitting,
-  onBack,
-  pristine,
-  submitSucceeded
-}) {
-  return (
+class CustomerEdit extends Component {
+  componentDidMount() {
+    if (this.txt) {
+      this.txt.focus()
+    }
+  }
+
+  renderField = ({ input, meta, type, label, name, withFocus }) => (
     <div>
-      <h2>Edición del cliente</h2>
-      <form onSubmit={handleSubmit}>
-        <Field
-          name="name"
-          component={MyField}
-          type="text"
-          label="Nombre"
-          parse={toUpper}
-          format={toLower}
-        />
-        <Field name="dni" component={MyField} type="number" label="Dni" />
-        <Field
-          name="age"
-          component={MyField}
-          type="number"
-          label="Edad"
-          parse={toNumber}
-          normalize={onlyGrow}
-        />
-        <CustomersActions>
-          <button type="submit" disabled={pristine || submitting}>
-            Aceptar
-          </button>
-          <button type="button" disabled={submitting} onClick={onBack}>
-            Cancelar
-          </button>
-        </CustomersActions>
-        <Prompt
-          when={!pristine && !submitSucceeded}
-          message="Se perderán los datos si continúa"
-        />
-      </form>
+      <label htmlFor={name}>{label}</label>
+      <input
+        {...input}
+        type={!type ? 'text' : type}
+        ref={withFocus && (txt => (this.txt = txt))}
+      />
+      {meta.touched && meta.error && <span>{meta.error}</span>}
     </div>
   )
+
+  render() {
+    const {
+      handleSubmit,
+      submitting,
+      onBack,
+      pristine,
+      submitSucceeded
+    } = this.props
+    return (
+      <div>
+        <h2>Edición del cliente</h2>
+        <form onSubmit={handleSubmit}>
+          <Field
+            withFocus={true}
+            name='name'
+            component={this.renderField}
+            type='text'
+            label='Nombre'
+            parse={toUpper}
+            format={toLower}
+          />
+          <Field
+            name='dni'
+            component={this.renderField}
+            type='number'
+            label='Dni'
+          />
+          <Field
+            name='age'
+            component={this.renderField}
+            type='number'
+            label='Edad'
+            parse={toNumber}
+            normalize={onlyGrow}
+          />
+          <CustomersActions>
+            <button type='submit' disabled={pristine || submitting}>
+              Aceptar
+            </button>
+            <button type='button' disabled={submitting} onClick={onBack}>
+              Cancelar
+            </button>
+          </CustomersActions>
+          <Prompt
+            when={!pristine && !submitSucceeded}
+            message='Se perderán los datos si continúa'
+          />
+        </form>
+      </div>
+    )
+  }
 }
 
 CustomerEdit.propTypes = {

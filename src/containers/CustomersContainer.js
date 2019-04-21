@@ -10,7 +10,9 @@ import { getCustomers } from '../selectors/customers'
 
 class CustomersContainer extends Component {
   componentDidMount() {
-    this.props.fetchCustomers()
+    if (this.props.customers.length === 0) {
+      this.props.fetchCustomers()
+    }
   }
   handleAddNew = () => {
     this.props.history.push('/customers/new')
@@ -27,7 +29,7 @@ class CustomersContainer extends Component {
   render() {
     return (
       <div>
-        <AppFrame header="home" body={this.renderBody(this.props.customers)} />
+        <AppFrame header='home' body={this.renderBody(this.props.customers)} />
       </div>
     )
   }
@@ -35,7 +37,7 @@ class CustomersContainer extends Component {
 
 CustomersContainer.propTypes = {
   fetchCustomers: PropTypes.func.isRequired,
-  customers: PropTypes.array.isRequired,
+  customers: PropTypes.array.isRequired
 }
 
 CustomersContainer.defaultProps = {
